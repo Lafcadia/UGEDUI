@@ -86,21 +86,24 @@ def wyydownloader(ID):
     ID是一个字符串，是网易云音乐的歌曲ID，
     ignorance是一个是否被错误打断的boolean，若为True则忽视VIP歌曲无法下载错误并给予反馈。
     '''
-    ID = IDTester(ID)
-    data = requests.get('http://music.163.com/api/song/detail/?id='+ID+'&ids=%5B'+ID+'%5D', headers=headers)
-    if data.content == r'{"songs":[],"equalizers":{},"code":200}':
-        raise NotExist404
-    n = json.loads(data.content)
-    name = n['songs'][0]['name']
-    creator = n['songs'][0]['artists'][0]['name']
-    chunk_size = 1024
-    response = requests.get('http://music.163.com/song/media/outer/url?id=%s.mp3' % ID, headers=headers)
-    file_size = response.headers.get('Content-Length')
-    if file_size is not None:
-        file_size = int(file_size)
-    with open(f'{name} - {creator}.mp3', mode='wb') as f:
-        for chunk in response.iter_content(chunk_size=chunk_size):
-            f.write(chunk)
+    try:
+        ID = IDTester(ID)
+        data = requests.get('http://music.163.com/api/song/detail/?id='+ID+'&ids=%5B'+ID+'%5D', headers=headers)
+        if data.content == r'{"songs":[],"equalizers":{},"code":200}':
+            raise NotExist404
+        n = json.loads(data.content)
+        name = n['songs'][0]['name']
+        creator = n['songs'][0]['artists'][0]['name']
+        chunk_size = 1024
+        response = requests.get('http://music.163.com/song/media/outer/url?id=%s.mp3' % ID, headers=headers)
+        file_size = response.headers.get('Content-Length')
+        if file_size is not None:
+            file_size = int(file_size)
+        with open(f'{name} - {creator}.mp3', mode='wb') as f:
+            for chunk in response.iter_content(chunk_size=chunk_size):
+                f.write(chunk)
+    except:
+        print(ID,"下载失败")
 
 def get_music_info(key_word):
     chrome_options = webdriver.ChromeOptions()
