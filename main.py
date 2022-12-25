@@ -4,7 +4,7 @@ import sys, os
 from PySide6.QtWidgets import QMainWindow, QApplication, QMessageBox
 from PySide6 import QtCore
 from pyperclip import copy
-from webbrowser import open
+import webbrowser
 from requests import get
 from backup_engine import netease, QQMusic, kuwo
 from backup_engine.batches import NeteaseMulti, kuwoMulti
@@ -64,7 +64,7 @@ class TheMainWindow(QMainWindow):
 
     def browseIt(self):
         for i in self.ui.linksObtained.toPlainText().split("\n"):
-            open(i,2)
+            webbrowser.open(i,2)
     
     def copying(self):
         copy(self.ui.linksObtained.toPlainText())
